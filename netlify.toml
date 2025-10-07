@@ -1,7 +1,0 @@
-[build]
-  base = "my-react-project"
-  publish = "my-react-project/build"
-  command = "npm run build"
-
-[build.environment]
-  NODE_VERSION = "18"
