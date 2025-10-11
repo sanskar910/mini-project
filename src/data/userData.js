@@ -90,15 +90,5 @@ const subjects = [
   { id: 6, name: "Library", code: "MATH201", description: "Vector spaces and linear transformations", credits: 3, department: "Mathematics" }
 ];
 
-const timetables = [
-  { id: 1, facultyId: 1, subjectId: 1, classroomId: 1, day: "Monday", startTime: "09:00", endTime: "10:00", semester: "BCA 5th" },
-  { id: 2, facultyId: 2, subjectId: 2, classroomId: 2, day: "Tuesday", startTime: "11:00", endTime: "12:00", semester: "BCA 3th" },
-  { id: 3, facultyId: 3, subjectId: 3, classroomId: 3, day: "Wednesday", startTime: "14:00", endTime: "15:00", semester: "BCA 5th" },
-  { id: 4, facultyId: 1, subjectId: 5, classroomId: 1, day: "Thursday", startTime: "10:00", endTime: "11:00", semester: "BCA 3th" },
-  { id: 5, facultyId: 2, subjectId: 6, classroomId: 2, day: "Friday", startTime: "13:00", endTime: "14:00", semester: "IMCA 5th" }
-];
-
-
-
-export { faculty, classrooms, subjects, timetables };
+export { faculty, classrooms, subjects };
 export default faculty;

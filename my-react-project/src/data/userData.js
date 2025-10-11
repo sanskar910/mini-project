@@ -98,7 +98,5 @@ const timetables = [
   { id: 5, facultyId: 2, subjectId: 6, classroomId: 2, day: "Friday", startTime: "13:00", endTime: "14:00", semester: "IMCA 5th" }
 ];
 
-
-
 export { faculty, classrooms, subjects, timetables };
 export default faculty;

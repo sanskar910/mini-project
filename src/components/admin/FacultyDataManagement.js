@@ -1,45 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import dataService from '../../services/dataService';
 import '../../assets/mobile-responsive.css';
+import '../../assets/FacultyDataManagement.css';
 
 const FacultyDataManagement = () => {
-  const [facultyList, setFacultyList] = useState([
-    { 
-      id: 1, 
-      name: 'Dr. John Smith', 
-      department: 'Computer Science', 
-      email: 'john.smith@university.edu', 
-      phone: '+1-234-567-8901',
-      position: 'Professor',
-      subjects: ['Data Structures', 'Algorithms', 'Machine Learning'],
-      profile: 'Dr. Smith has 15+ years of experience in computer science research with expertise in AI and machine learning.',
-      office: 'CS-301',
-      officeHours: 'Mon-Wed 2-4 PM'
-    },
-    { 
-      id: 2, 
-      name: 'Dr. Sarah Johnson', 
-      department: 'Mathematics', 
-      email: 'sarah.johnson@university.edu', 
-      phone: '+1-234-567-8902',
-      position: 'Associate Professor',
-      subjects: ['Calculus I', 'Calculus II', 'Linear Algebra'],
-      profile: 'Specialized in applied mathematics with focus on statistical modeling and data analysis.',
-      office: 'MATH-205',
-      officeHours: 'Tue-Thu 1-3 PM'
-    },
-    { 
-      id: 3, 
-      name: 'Dr. Mike Wilson', 
-      department: 'Physics', 
-      email: 'mike.wilson@university.edu', 
-      phone: '+1-234-567-8903',
-      position: 'Assistant Professor',
-      subjects: ['Physics I', 'Physics II', 'Quantum Mechanics'],
-      profile: 'Research focus on quantum physics and theoretical mechanics. Former NASA researcher.',
-      office: 'PHY-102',
-      officeHours: 'Mon-Fri 10-12 PM'
-    }
-  ]);
+  const [facultyList, setFacultyList] = useState([]);
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [lastSyncTime, setLastSyncTime] = useState(new Date());
+
+  useEffect(() => {
+    setFacultyList(dataService.getFacultyData());
+    
+    const unsubscribe = dataService.subscribe((updatedData) => {
+      setFacultyList(updatedData);
+      setLastSyncTime(new Date());
+    });
+
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+    
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    dataService.syncWithBackend();
+
+    const syncInterval = setInterval(() => {
+      dataService.syncWithBackend();
+    }, 30000); // Sync every 30 seconds
+
+    return () => {
+      unsubscribe();
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+      clearInterval(syncInterval);
+    };
+  }, []);
 
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingFaculty, setEditingFaculty] = useState(null);
@@ -49,10 +44,9 @@ const FacultyDataManagement = () => {
     e.preventDefault();
     const faculty = { 
       ...newFaculty, 
-      id: Date.now(),
       subjects: newFaculty.subjects.split(',').map(s => s.trim()).filter(s => s)
     };
-    setFacultyList([...facultyList, faculty]);
+    dataService.addFaculty(faculty);
     setNewFaculty({ name: '', department: '', email: '', phone: '', position: '', subjects: '', profile: '', office: '', officeHours: '' });
     setShowAddForm(false);
   };
@@ -70,10 +64,9 @@ const FacultyDataManagement = () => {
     e.preventDefault();
     const updatedFaculty = {
       ...newFaculty,
-      id: editingFaculty.id,
       subjects: newFaculty.subjects.split(',').map(s => s.trim()).filter(s => s)
     };
-    setFacultyList(facultyList.map(f => f.id === editingFaculty.id ? updatedFaculty : f));
+    dataService.updateFaculty(editingFaculty.id, updatedFaculty);
     setNewFaculty({ name: '', department: '', email: '', phone: '', position: '', subjects: '', profile: '', office: '', officeHours: '' });
     setEditingFaculty(null);
     setShowAddForm(false);
@@ -86,13 +79,19 @@ const FacultyDataManagement = () => {
   };
 
   const handleDeleteFaculty = (id) => {
-    setFacultyList(facultyList.filter(f => f.id !== id));
+    dataService.deleteFaculty(id);
   };
 
   return (
     <div className="faculty-management">
       <div className="section-header">
         <h2>Faculty Data Management</h2>
+        <div className="sync-status">
+          <span className={`status-indicator ${isOnline ? 'online' : 'offline'}`}>
+            {isOnline ? '🟢 Online' : '🔴 Offline'}
+          </span>
+          <span className="last-sync">Last sync: {lastSyncTime.toLocaleTimeString()}</span>
+        </div>
         <button className="add-btn" onClick={() => setShowAddForm(true)}>+ Add Faculty</button>
       </div>
 

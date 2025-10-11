@@ -1,45 +1,9 @@
 import React, { useState } from 'react';
+import { faculty } from '../../data/userData';
 import '../../assets/mobile-responsive.css';
 
 const FacultyDataManagement = () => {
-  const [facultyList, setFacultyList] = useState([
-    { 
-      id: 1, 
-      name: 'Dr. John Smith', 
-      department: 'Computer Science', 
-      email: 'john.smith@university.edu', 
-      phone: '+1-234-567-8901',
-      position: 'Professor',
-      subjects: ['Data Structures', 'Algorithms', 'Machine Learning'],
-      profile: 'Dr. Smith has 15+ years of experience in computer science research with expertise in AI and machine learning.',
-      office: 'CS-301',
-      officeHours: 'Mon-Wed 2-4 PM'
-    },
-    { 
-      id: 2, 
-      name: 'Dr. Sarah Johnson', 
-      department: 'Mathematics', 
-      email: 'sarah.johnson@university.edu', 
-      phone: '+1-234-567-8902',
-      position: 'Associate Professor',
-      subjects: ['Calculus I', 'Calculus II', 'Linear Algebra'],
-      profile: 'Specialized in applied mathematics with focus on statistical modeling and data analysis.',
-      office: 'MATH-205',
-      officeHours: 'Tue-Thu 1-3 PM'
-    },
-    { 
-      id: 3, 
-      name: 'Dr. Mike Wilson', 
-      department: 'Physics', 
-      email: 'mike.wilson@university.edu', 
-      phone: '+1-234-567-8903',
-      position: 'Assistant Professor',
-      subjects: ['Physics I', 'Physics II', 'Quantum Mechanics'],
-      profile: 'Research focus on quantum physics and theoretical mechanics. Former NASA researcher.',
-      office: 'PHY-102',
-      officeHours: 'Mon-Fri 10-12 PM'
-    }
-  ]);
+  const [facultyList, setFacultyList] = useState(faculty);
 
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingFaculty, setEditingFaculty] = useState(null);

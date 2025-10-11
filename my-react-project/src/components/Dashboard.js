@@ -1,9 +1,14 @@
 import React from 'react';
 import AdminDashboard from './AdminDashboard';
+import FacultyDashboard from './FacultyDashboard';
 
-const Dashboard = ({ userRole, onLogout }) => {
+const Dashboard = ({ userRole, onLogout, facultyId }) => {
   if (userRole === 'admin') {
     return <AdminDashboard userRole={userRole} onLogout={onLogout} />;
+  }
+  
+  if (userRole === 'faculty') {
+    return <FacultyDashboard userRole={userRole} onLogout={onLogout} facultyId={facultyId} />;
   }
 
   return (

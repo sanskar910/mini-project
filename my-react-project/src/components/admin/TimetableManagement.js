@@ -1,34 +1,9 @@
 import React, { useState } from 'react';
+import { useTimetable } from '../../context/TimetableContext';
+import { faculty, subjects, classrooms } from '../../data/userData.js';
 
 const TimetableManagement = () => {
-  const [faculty] = useState([
-    { id: 1, name: 'Dr. John Smith' },
-    { id: 2, name: 'Dr. Sarah Johnson' },
-    { id: 3, name: 'Dr. Mike Wilson' },
-    { id: 4, name: 'Dr. Emily Davis' }
-  ]);
-
-  const [subjects] = useState([
-    { id: 1, name: 'Data Structures', code: 'CS101' },
-    { id: 2, name: 'Calculus I', code: 'MATH101' },
-    { id: 3, name: 'Physics I', code: 'PHY101' },
-    { id: 4, name: 'Organic Chemistry', code: 'CHEM201' },
-    { id: 5, name: 'Machine Learning', code: 'CS301' }
-  ]);
-
-  const [classrooms] = useState([
-    { id: 1, roomNumber: 'CS-101' },
-    { id: 2, roomNumber: 'MATH-201' },
-    { id: 3, roomNumber: 'PHY-301' },
-    { id: 4, roomNumber: 'CHEM-401' }
-  ]);
-
-  const [timetables, setTimetables] = useState([
-    { id: 1, facultyId: 1, subjectId: 1, classroomId: 1, day: 'Monday', startTime: '09:00', endTime: '10:30', semester: 'Fall 2024' },
-    { id: 2, facultyId: 2, subjectId: 2, classroomId: 2, day: 'Tuesday', startTime: '11:00', endTime: '12:30', semester: 'Fall 2024' },
-    { id: 3, facultyId: 3, subjectId: 3, classroomId: 3, day: 'Wednesday', startTime: '14:00', endTime: '15:30', semester: 'Fall 2024' },
-    { id: 4, facultyId: 1, subjectId: 5, classroomId: 1, day: 'Thursday', startTime: '10:00', endTime: '11:30', semester: 'Fall 2024' }
-  ]);
+  const { timetables, addTimetableEntry, updateTimetableEntry, deleteTimetableEntry } = useTimetable();
 
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingTimetable, setEditingTimetable] = useState(null);
@@ -46,12 +21,11 @@ const TimetableManagement = () => {
     e.preventDefault();
     const timetable = {
       ...newTimetable,
-      id: Date.now(),
       facultyId: parseInt(newTimetable.facultyId),
       subjectId: parseInt(newTimetable.subjectId),
       classroomId: parseInt(newTimetable.classroomId)
     };
-    setTimetables([...timetables, timetable]);
+    addTimetableEntry(timetable);
     setNewTimetable({ facultyId: '', subjectId: '', classroomId: '', day: '', startTime: '', endTime: '', semester: '' });
     setShowAddForm(false);
   };
@@ -66,19 +40,18 @@ const TimetableManagement = () => {
     e.preventDefault();
     const updatedTimetable = {
       ...newTimetable,
-      id: editingTimetable.id,
       facultyId: parseInt(newTimetable.facultyId),
       subjectId: parseInt(newTimetable.subjectId),
       classroomId: parseInt(newTimetable.classroomId)
     };
-    setTimetables(timetables.map(t => t.id === editingTimetable.id ? updatedTimetable : t));
+    updateTimetableEntry(editingTimetable.id, updatedTimetable);
     setNewTimetable({ facultyId: '', subjectId: '', classroomId: '', day: '', startTime: '', endTime: '', semester: '' });
     setEditingTimetable(null);
     setShowAddForm(false);
   };
 
   const handleDeleteTimetable = (id) => {
-    setTimetables(timetables.filter(t => t.id !== id));
+    deleteTimetableEntry(id);
   };
 
   const resetForm = () => {
@@ -87,11 +60,39 @@ const TimetableManagement = () => {
     setShowAddForm(false);
   };
 
+  const handleExportTimetable = () => {
+    // Simulate export and real-time update
+    const exportData = {
+      timestamp: new Date().toISOString(),
+      timetables: timetables,
+      totalEntries: timetables.length
+    };
+    
+    // Create and download JSON file
+    const dataStr = JSON.stringify(exportData, null, 2);
+    const dataBlob = new Blob([dataStr], {type: 'application/json'});
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `timetable-export-${new Date().toISOString().split('T')[0]}.json`;
+    link.click();
+    
+    // Trigger real-time update notification
+    window.dispatchEvent(new CustomEvent('timetableExported', {
+      detail: { message: 'Timetable exported successfully!', timestamp: new Date() }
+    }));
+    
+    alert('Timetable exported successfully! Faculty dashboards will be updated in real-time.');
+  };
+
   return (
     <div className="timetable-management">
       <div className="section-header">
         <h2>Timetable Management</h2>
-        <button className="add-btn" onClick={() => setShowAddForm(true)}>+ Add Schedule</button>
+        <div className="header-actions">
+          <button className="export-btn" onClick={handleExportTimetable}>📤 Export Timetable</button>
+          <button className="add-btn" onClick={() => setShowAddForm(true)}>+ Add Schedule</button>
+        </div>
       </div>
 
       {showAddForm && (

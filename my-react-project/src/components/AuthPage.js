@@ -5,28 +5,17 @@ import AdminDashboard from './AdminDashboard';
 import '../assets/LoginPage.css';
 import '../assets/responsive-utils.css';
 
-const AuthPage = () => {
+const AuthPage = ({ onLogin }) => {
   const [isLogin, setIsLogin] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userRole, setUserRole] = useState('');
 
   const toggleToSignup = () => setIsLogin(false);
   const toggleToLogin = () => setIsLogin(true);
   
-  const handleLoginSuccess = (role) => {
-    setIsAuthenticated(true);
-    setUserRole(role);
+  const handleLoginSuccess = (role, facultyId) => {
+    console.log('AuthPage: Login success', { role, facultyId });
+    // Pass login success to parent App component
+    onLogin(role, facultyId);
   };
-  
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-    setUserRole('');
-    setIsLogin(true);
-  };
-
-  if (isAuthenticated && userRole === 'admin') {
-    return <AdminDashboard userRole={userRole} onLogout={handleLogout} />;
-  }
 
   return (
     <>

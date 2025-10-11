@@ -19,9 +19,38 @@ const LoginPage = ({ onToggleToSignup, onLoginSuccess }) => {
     e.preventDefault();
     console.log('Login submitted:', { ...formData, role: selectedRole });
     
-    // Simulate login success
-    if (formData.email && formData.password) {
-      onLoginSuccess(selectedRole);
+    // Faculty credentials
+    const facultyCredentials = {
+      'rinkusingh@university.edu': { password: 'rinku123', id: 1 },
+      'rohan1294@university.edu': { password: 'rohan123', id: 2 },
+      'Aniketpaul@university.edu': { password: 'aniket123', id: 3 },
+      'sonali637@university.edu': { password: 'sonali123', id: 4 },
+      'sumitsoni@university.edu': { password: 'sumit123', id: 5 },
+      'manish236@university.edu': { password: 'manish123', id: 6 }
+    };
+    
+    // Admin credentials
+    const adminCredentials = {
+      'admin@university.edu': { password: 'admin123', id: 'admin' }
+    };
+    
+    if (selectedRole === 'faculty') {
+      const facultyAuth = facultyCredentials[formData.email];
+      if (facultyAuth && facultyAuth.password === formData.password) {
+        localStorage.setItem('userRole', 'faculty');
+        localStorage.setItem('facultyId', facultyAuth.id);
+        onLoginSuccess('faculty', facultyAuth.id);
+      } else {
+        alert('Invalid faculty credentials');
+      }
+    } else if (selectedRole === 'admin') {
+      const adminAuth = adminCredentials[formData.email];
+      if (adminAuth && adminAuth.password === formData.password) {
+        localStorage.setItem('userRole', 'admin');
+        onLoginSuccess('admin');
+      } else {
+        alert('Invalid admin credentials');
+      }
     }
   };
 
