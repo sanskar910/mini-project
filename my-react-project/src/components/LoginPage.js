@@ -115,7 +115,7 @@ const LoginPage = ({ onToggleToSignup, onLoginSuccess }) => {
               <input type="checkbox" />
               <span>Remember me</span>
             </label>
-            <a href="#" className="forgot-password">Forgot Password?</a>
+            <button type="button" className="forgot-password">Forgot Password?</button>
           </div>
 
           <button type="submit" className="submit-btn">

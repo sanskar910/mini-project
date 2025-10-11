@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { faculty, classrooms, subjects } from '../data/userData.js';
-import { useTimetable } from '../context/TimetableContext';
 import '../assets/FacultyDashboard.css';
 
 const FacultyDashboard = ({ userRole, onLogout, facultyId }) => {

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import LoginPage from './LoginPage';
 import SignupPage from './SignupPage';
-import AdminDashboard from './AdminDashboard';
 import '../assets/LoginPage.css';
 import '../assets/responsive-utils.css';
 
