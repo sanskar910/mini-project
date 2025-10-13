@@ -77,9 +77,51 @@ app.get("/api/faculty/:id/timetable", (req, res) => {
   res.json(facultyTimetable);
 });
 
-// Get all timetables
+// Get all timetables with detailed information
 app.get("/api/timetables", (req, res) => {
-  res.json(timetables);
+  const detailedTimetables = timetables.map(timetable => {
+    const facultyMember = faculty.find(f => f.id === timetable.facultyId);
+    const subject = subjects.find(s => s.id === timetable.subjectId);
+    const classroom = classrooms.find(c => c.id === timetable.classroomId);
+    
+    return {
+      ...timetable,
+      facultyName: facultyMember?.name || 'Unknown Faculty',
+      subjectName: subject?.name || 'Unknown Subject',
+      subjectCode: subject?.code || 'N/A',
+      classroomNumber: classroom?.roomNumber || 'TBA',
+      location: classroom?.location || 'TBA'
+    };
+  });
+  
+  res.json(detailedTimetables);
+});
+
+// Get all faculty
+app.get("/api/faculty", (req, res) => {
+  res.json(faculty);
+});
+
+// Get all subjects
+app.get("/api/subjects", (req, res) => {
+  res.json(subjects);
+});
+
+// Get all classrooms
+app.get("/api/classrooms", (req, res) => {
+  res.json(classrooms);
+});
+
+// Get faculty by ID
+app.get("/api/faculty/:id", (req, res) => {
+  const facultyId = parseInt(req.params.id);
+  const facultyMember = faculty.find(f => f.id === facultyId);
+  
+  if (facultyMember) {
+    res.json(facultyMember);
+  } else {
+    res.status(404).json({ error: 'Faculty not found' });
+  }
 });
 
 const port = process.env.PORT || 5000
